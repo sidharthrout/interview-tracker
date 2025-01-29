@@ -1,56 +1,52 @@
 # Interview Tracker
 
-A modern web application to track your job interviews and sync them with Google Calendar. Built with Next.js, Prisma, and TypeScript.
+A comprehensive web application for managing job interviews, built with Next.js 13+. Keep track of your interview schedule, sync with Google Calendar, and maintain detailed records of your job search journey.
 
 ## Features
 
-- Track job interviews with detailed information
-- Sync interviews with Google Calendar
-- Authentication with Google
-- Responsive design with Tailwind CSS
-- Real-time updates
-- Interview status tracking
+- 📅 Calendar Integration with Google Calendar
+- 🔄 Real-time Updates
+- 🌐 Timezone-aware Scheduling
+- 📝 Interview Notes and Preparation
+- 📊 Status Tracking
+- 🔒 Secure Authentication
+- 📱 Responsive Design
 
-## Prerequisites
+## Tech Stack
 
-- Node.js 18+ installed
-- A Google Cloud Platform account
-- SQLite (included by default)
+- **Frontend**: Next.js 13+, React, Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Database**: Prisma with SQLite
+- **Authentication**: NextAuth.js
+- **Calendar**: FullCalendar
+- **Real-time Updates**: SWR
 
-## Setup Instructions
+## Getting Started
 
-1. Clone the repository and install dependencies:
+1. Clone the repository:
 ```bash
+git clone https://github.com/sidharthrout/interview-tracker.git
 cd interview-tracker
+```
+
+2. Install dependencies:
+```bash
 npm install
 ```
 
-2. Set up Google OAuth:
-
-   a. Go to [Google Cloud Console](https://console.cloud.google.com)
-   b. Create a new project or select an existing one
-   c. Enable the Google Calendar API
-   d. Configure the OAuth consent screen:
-      - Set user type to "External"
-      - Add necessary scopes ("calendar" and "calendar.events")
-   e. Create OAuth 2.0 credentials:
-      - Application type: "Web application"
-      - Add authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
-      - Save the Client ID and Client Secret
-
-3. Configure environment variables:
-   - Copy `.env` and update with your credentials:
+3. Set up environment variables:
+Create a `.env` file with:
 ```env
 DATABASE_URL="file:./dev.db"
+GOOGLE_CLIENT_ID="your_google_client_id"
+GOOGLE_CLIENT_SECRET="your_google_client_secret"
 NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret-key-at-least-32-chars"
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
+NEXTAUTH_SECRET="your_nextauth_secret"
 ```
 
 4. Initialize the database:
 ```bash
-npx prisma db push
+npx prisma migrate dev
 ```
 
 5. Run the development server:
@@ -58,45 +54,36 @@ npx prisma db push
 npm run dev
 ```
 
-6. Open [http://localhost:3000](http://localhost:3000) in your browser
+6. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Usage
+## Features in Detail
 
-1. Sign in with your Google account
-2. Click "Add Interview" to create a new interview entry
-3. Fill in the interview details
-4. The interview will be automatically synced with your Google Calendar
-5. View and manage your interviews from the dashboard
-6. Edit or delete interviews as needed
+### Calendar View
+- Month, week, and day views
+- Click on any date to schedule an interview
+- Visual indicators for different interview statuses
+- Tooltips with interview details
 
-## Project Structure
+### Interview Management
+- Create, edit, and delete interviews
+- Track company, position, and interview round
+- Add notes and preparation materials
+- Monitor interview status
 
-```
-interview-tracker/
-├── src/
-│   ├── app/                 # Next.js 14 app directory
-│   ├── components/         # React components
-│   └── types/             # TypeScript type definitions
-├── prisma/                # Database schema and migrations
-└── public/               # Static assets
-```
+### Google Calendar Integration
+- Automatically sync interviews with Google Calendar
+- Manage interview schedules in one place
+- Receive calendar notifications and reminders
 
-## Security Notes
+### Real-time Updates
+- See changes instantly across all views
+- Automatic data refresh
+- No manual refresh needed
 
-- The application uses NextAuth.js for secure authentication
-- OAuth 2.0 with refresh tokens for persistent Google Calendar access
-- Environment variables for sensitive credentials
-- Database is secured with Prisma's security features
+## Contributing
 
-## Development
-
-To add new features or make changes:
-
-1. Create a new branch
-2. Make your changes
-3. Run tests (if available)
-4. Create a pull request
+Feel free to open issues and pull requests for any improvements you'd like to add.
 
 ## License
 
-MIT License - feel free to use this project for personal or commercial purposes.
+This project is licensed under the MIT License.
