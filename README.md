@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Interview Tracker
 
-## Getting Started
+A modern web application to track your job interviews and sync them with Google Calendar. Built with Next.js, Prisma, and TypeScript.
 
-First, run the development server:
+## Features
 
+- Track job interviews with detailed information
+- Sync interviews with Google Calendar
+- Authentication with Google
+- Responsive design with Tailwind CSS
+- Real-time updates
+- Interview status tracking
+
+## Prerequisites
+
+- Node.js 18+ installed
+- A Google Cloud Platform account
+- SQLite (included by default)
+
+## Setup Instructions
+
+1. Clone the repository and install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd interview-tracker
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Set up Google OAuth:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   a. Go to [Google Cloud Console](https://console.cloud.google.com)
+   b. Create a new project or select an existing one
+   c. Enable the Google Calendar API
+   d. Configure the OAuth consent screen:
+      - Set user type to "External"
+      - Add necessary scopes ("calendar" and "calendar.events")
+   e. Create OAuth 2.0 credentials:
+      - Application type: "Web application"
+      - Add authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
+      - Save the Client ID and Client Secret
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Configure environment variables:
+   - Copy `.env` and update with your credentials:
+```env
+DATABASE_URL="file:./dev.db"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret-key-at-least-32-chars"
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+```
 
-## Learn More
+4. Initialize the database:
+```bash
+npx prisma db push
+```
 
-To learn more about Next.js, take a look at the following resources:
+5. Run the development server:
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Usage
 
-## Deploy on Vercel
+1. Sign in with your Google account
+2. Click "Add Interview" to create a new interview entry
+3. Fill in the interview details
+4. The interview will be automatically synced with your Google Calendar
+5. View and manage your interviews from the dashboard
+6. Edit or delete interviews as needed
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+interview-tracker/
+├── src/
+│   ├── app/                 # Next.js 14 app directory
+│   ├── components/         # React components
+│   └── types/             # TypeScript type definitions
+├── prisma/                # Database schema and migrations
+└── public/               # Static assets
+```
+
+## Security Notes
+
+- The application uses NextAuth.js for secure authentication
+- OAuth 2.0 with refresh tokens for persistent Google Calendar access
+- Environment variables for sensitive credentials
+- Database is secured with Prisma's security features
+
+## Development
+
+To add new features or make changes:
+
+1. Create a new branch
+2. Make your changes
+3. Run tests (if available)
+4. Create a pull request
+
+## License
+
+MIT License - feel free to use this project for personal or commercial purposes.

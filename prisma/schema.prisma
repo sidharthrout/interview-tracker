@@ -1,0 +1,170 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? 
+  access_token      String? 
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? 
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String      @id @default(cuid())
+  name          String?
+  email         String?     @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  interviews    Interview[]
+  notes         Note[]
+  profile       Profile?
+  documents     Document[]
+  applications  JobApplication[]
+  analytics     Analytics[]
+}
+
+model Profile {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  bio              String?
+  location         String?
+  currentRole      String?
+  desiredRole      String?
+  preferredSalary  String?
+  skills           String?  // Stored as JSON string
+  experience       String?  // Years of experience
+  education        String?  // Stored as JSON string
+  linkedinUrl      String?
+  githubUrl        String?
+  portfolioUrl     String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Interview {
+  id              String    @id @default(cuid())
+  userId          String
+  applicationId   String?   // Optional link to job application
+  company         String
+  position        String
+  date            DateTime
+  endTime         DateTime?
+  status          String    // expanded status options
+  round           String    // interview round
+  type            String?   // e.g., "technical", "behavioral", "system design"
+  format          String?   // "in-person", "video", "phone"
+  location        String?   // address or meeting link
+  notes          String?
+  preparation    String?    // preparation notes
+  feedback       String?    // post-interview feedback
+  questions      String?    // questions to ask/asked
+  salary         String?    // discussed salary
+  calendarEventId String?   // Google Calendar event ID
+  followUpStatus String?    // "pending", "completed", "not_required"
+  followUpDate   DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  application    JobApplication? @relation(fields: [applicationId], references: [id])
+  documents      InterviewDocument[]
+}
+
+model JobApplication {
+  id              String    @id @default(cuid())
+  userId          String
+  company         String
+  position        String
+  jobDescription  String?
+  location        String?
+  salary          String?
+  source          String?   // e.g., "LinkedIn", "Indeed", "Company Website"
+  status          String    // "applied", "interview", "offer", "rejected", etc.
+  appliedDate     DateTime
+  deadline        DateTime?
+  recruiterName   String?
+  recruiterEmail  String?
+  recruiterPhone  String?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  interviews      Interview[]
+  documents       Document[]
+}
+
+model Document {
+  id              String    @id @default(cuid())
+  userId          String
+  applicationId   String?
+  type            String    // "resume", "cover_letter", "portfolio", etc.
+  name            String
+  url             String    // storage URL
+  version         Int       @default(1)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  application     JobApplication? @relation(fields: [applicationId], references: [id])
+  interviews      InterviewDocument[]
+}
+
+model InterviewDocument {
+  id           String    @id @default(cuid())
+  interviewId  String
+  documentId   String
+  interview    Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  document     Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  content   String
+  userId    String
+  type      String?  // "general", "interview_prep", "follow_up", etc.
+  category  String?  // for organization
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Analytics {
+  id             String   @id @default(cuid())
+  userId         String
+  totalApplied   Int      @default(0)
+  totalInterviews Int     @default(0)
+  offers         Int      @default(0)
+  rejections     Int      @default(0)
+  avgResponseTime Float?  // average time to response in days
+  successRate    Float?   // interview success rate
+  period         String   // "weekly", "monthly", "yearly"
+  startDate      DateTime
+  endDate        DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
